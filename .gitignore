@@ -1,0 +1,7 @@
+archive_3d_models.log
+archive_3d_models_end_GUI.py
+archive_3d_models_main_GUI.py
+archive_3d_models_settings_GUI.py
+.idea/
+__pycache__/
+.directory
