@@ -5,3 +5,4 @@ archive_3d_models_settings_GUI.py
 .idea/
 __pycache__/
 .directory
+metadata.json
