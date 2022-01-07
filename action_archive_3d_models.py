@@ -223,18 +223,27 @@ class Archive3DModels(pcbnew.ActionPlugin):
                 logging_level = logging.INFO
             logger.setLevel(logging_level)
 
-            # create an instance
-            archiver = Archiver(model_local_path)
-            # and run the plugin
-            not_copied_list = archiver.archive_3d_models(board, remap_missing_models=amm)
+            # wrap the call, to catch and log any exceptions
+            try:
+                archiver = Archiver(model_local_path)
+                # and run the plugin
+                not_copied_list = archiver.archive_3d_models(board, remap_missing_models=amm)
+                # when finished, let the user know which models are missing
+                e_dlg = EndReport(not_copied_list)
+                e_dlg.ShowModal()
+                e_dlg.Destroy()
+                pcbnew.Refresh()
+            except Exception:
+                logger.exception("Fatal error when executing Archive 3D Models")
+                caption = 'Archive 3D Models'
+                message = "Fatal error when executing Archive 3D Models.\n" \
+                          + "You can raise an issue on plugin's GiHub page.\n" \
+                          + "Please attach the archive_3d_models.log which you should find in the project folder."
+                dlg = wx.MessageDialog(None, message, caption, wx.OK | wx.ICON_ERROR)
+                dlg.ShowModal()
+                dlg.Destroy()
 
-            pcbnew.Refresh()
-
-            # when finished, let the user know which models are missing
-            e_dlg = EndReport(not_copied_list)
-            e_dlg.ShowModal()
-            e_dlg.Destroy()
-
+        # clean up before exiting
         main_dlg.Destroy()
         logging.shutdown()
 
