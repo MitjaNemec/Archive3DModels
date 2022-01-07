@@ -27,14 +27,6 @@ import logging
 import sys
 from configparser import ConfigParser
 from .archive_3d_models import Archiver
-
-# get version information
-version_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), "version.txt")
-with open(version_filename) as f:
-    VERSION = f.readline().strip()
-
-BUILD_VERSION = pcbnew.GetBuildVersion()
-
 from .archive_3d_models_main_GUI import Archive3DModelsMainGui
 from .archive_3d_models_settings_GUI import Archive3DModelsSettingsGui
 from .archive_3d_models_end_GUI import Archive3DModelsEndGui
@@ -48,8 +40,17 @@ class EndReport(Archive3DModelsEndGui):
     def __init__(self, list_of_models):
         super(EndReport, self).__init__(None)
         # fill the TextCtrl
-        str_list = [repr(x) for x in list_of_models]
+        str_list = [str(x[0])+": "+str(x[1]) for x in list_of_models]
         self.txt_list.Value = "\n".join(str_list)
+
+    def on_copy(self, event):
+        data = wx.TextDataObject()
+        data.SetText(self.txt_list.GetValue())
+        if wx.TheClipboard.Open():
+            wx.TheClipboard.SetData(data)
+            wx.TheClipboard.Close()
+        else:
+            wx.MessageBox("Unable to open the clipboard", "Error")
 
 
 class MainWindow(Archive3DModelsMainGui):
@@ -61,7 +62,6 @@ class MainWindow(Archive3DModelsMainGui):
 
     def __init__(self, config_file_path):
         super(MainWindow, self).__init__(None)
-        #super().__init__(None)
         self.config_file_path = config_file_path
 
     def on_run(self, event):
@@ -72,7 +72,7 @@ class MainWindow(Archive3DModelsMainGui):
 
     def on_settings(self, event):
         sett_dlg = SettingsWindow(self, self.config_file_path)
-        ret_val = sett_dlg.ShowModal()
+        sett_dlg.ShowModal()
         sett_dlg.Destroy()
 
 
@@ -91,7 +91,7 @@ class SettingsWindow(Archive3DModelsSettingsGui):
             # read the file
             parser = ConfigParser()
             parser.read(self.config_file_path)
-            # parse the datastructure
+            # parse the data structure
             model_local_path = parser.get('config', 'model_local_path')
             if parser.get('config', 'allow_missing_models') == 'True':
                 amm = True
@@ -103,7 +103,7 @@ class SettingsWindow(Archive3DModelsSettingsGui):
             amm = True
             debug_level = 'info'
             model_local_path = '/packages3D'
-            # prep the datastructure
+            # prep the data structure
             parser = ConfigParser()
             parser.read('config.ini')
             parser.set('config', 'model_local_path', model_local_path)
@@ -122,7 +122,7 @@ class SettingsWindow(Archive3DModelsSettingsGui):
         amm = str(self.cb_amm.GetValue())
         model_local_path = self.txt_path.GetLineText(0)
         debug_level = self.cb_debug_level.GetStringSelection()
-        # prep the datastructure
+        # prep the data structure
         parser = ConfigParser()
         parser.read(self.config_file_path)
         parser.set('config', 'model_local_path', model_local_path)
@@ -132,12 +132,6 @@ class SettingsWindow(Archive3DModelsSettingsGui):
         with open(self.config_file_path, 'w') as configfile:
             parser.write(configfile)
 
-        # just a simple dialog
-        caption = 'Archive 3D models'
-        message = "Just a simple dialog"
-        dlg = wx.MessageDialog(None, message, caption, wx.OK | wx.ICON_INFORMATION)
-        dlg.ShowModal()
-        dlg.Destroy()
         # exit dialog
         self.EndModal(wx.ID_OK)
 
