@@ -1,9 +1,14 @@
 #! /bin/bash
 
 # refresh derived resources
-inkscape --without-gui archive_3d_models_dark.svg -w 24 -h 24 -o archive_3d_models_dark.png
-inkscape --without-gui archive_3d_models_light.svg -w 24 -h 24 -o archive_3d_models_light.png
-inkscape --without-gui archive_3d_models_light.svg -w 64 -h 64 -o archive_3d_models.png
+inkscape archive_3d_models_dark.svg -w 24 -h 24 -o archive_3d_models_dark.png
+inkscape archive_3d_models_light.svg -w 24 -h 24 -o archive_3d_models_light.png
+inkscape archive_3d_models_light.svg -w 64 -h 64 -o archive_3d_models.png
+
+# refresh the GUI design
+~/WxFormBuilder/bin/wxformbuilder -g Archive3DModels_end_GUI.fbp
+~/WxFormBuilder/bin/wxformbuilder -g Archive3DModels_main_GUI.fbp
+~/WxFormBuilder/bin/wxformbuilder -g Archive3DModels_settings_GUI.fbp
 
 # grab version and parse it into metadata.json
 cp metadata_source.json metadata.json
