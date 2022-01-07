@@ -1,0 +1,32 @@
+{
+    "$schema": "https://go.kicad.org/pcm/schemas/v1",
+    "name": "Archive3DModels",
+    "description": "Archive 3D Models",
+    "description_full": "Copy footprint models to the project local subfolder and remap all the links within the used footprints",
+    "identifier": "com.github.MitjaNemec.Archive3DModels",
+    "type": "plugin",
+    "author": {
+        "name": "Mitja Nemec",
+        "contact": {
+            "github": "https://github.com/MitjaNemec"
+        }
+    },    
+    "maintainer": {
+        "name": "Mitja Nemec",
+        "contact": {
+            "github": "https://github.com/MitjaNemec"
+        }
+    },
+    "license": "MIT",
+    "resources": {
+        "homepage": "https://github.com/MitjaNemec/Archive3DModels"
+    },
+    "versions": [
+        {
+            "version": "VERSION",
+            "status": "stable",
+            "kicad_version": "6.0"
+        }
+    ]
+}
+
