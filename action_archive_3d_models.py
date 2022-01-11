@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-#  action_length_stats.py
+#  action_archive_3d_models.py
 #
-# Copyright (C) 2018 Mitja Nemec
+# Copyright (C) 2022 Mitja Nemec
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#
 #
 
 import wx
@@ -37,8 +36,8 @@ class EndReport(Archive3DModelsEndGui):
         # DO NOTHING
         pass
 
-    def __init__(self, list_of_models):
-        super(EndReport, self).__init__(None)
+    def __init__(self, parent, list_of_models):
+        super(EndReport, self).__init__(parent)
         # fill the TextCtrl
         str_list = [str(x[0])+": "+str(x[1]) for x in list_of_models]
         self.txt_list.Value = "\n".join(str_list)
@@ -60,8 +59,8 @@ class MainWindow(Archive3DModelsMainGui):
         # DO NOTHING
         pass
 
-    def __init__(self, config_file_path):
-        super(MainWindow, self).__init__(None)
+    def __init__(self, parent, config_file_path):
+        super(MainWindow, self).__init__(parent)
         self.config_file_path = config_file_path
 
     def on_run(self, event):
@@ -150,7 +149,11 @@ class Archive3DModels(pcbnew.ActionPlugin):
     How to use:
     - run the plugin
     """
-    def defaults(self):
+    def __init__(self):
+        super(Archive3DModels, self).__init__()
+
+        self.frame = None
+
         self.name = "Archive 3D models"
         self.category = "Archive"
         self.description = "Copy and remap footprint 3D models into project local subfolder"
@@ -158,10 +161,15 @@ class Archive3DModels(pcbnew.ActionPlugin):
                 os.path.dirname(__file__), 'archive_3d_models_light.png')
         self.dark_icon_file_name = os.path.join(
                 os.path.dirname(__file__), 'archive_3d_models_dark.png')
-
         # read the configuration
+        # plugin paths
+        self.plugin_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)))
+        self.config_file_path = os.path.join(self.plugin_folder, 'config.ini')
+        self.version_file_path = os.path.join(self.plugin_folder, 'version.txt')
+
+        #read config
         parser = ConfigParser()
-        parser.read(os.path.join(os.path.dirname(__file__),'config.ini'))
+        parser.read(self.config_file_path)
         self.model_local_path = parser.get('config', 'model_local_path')
         if parser.get('config', 'allow_missing_models') == 'True':
             self.amm = True
@@ -169,14 +177,22 @@ class Archive3DModels(pcbnew.ActionPlugin):
             self.amm = False
         self.debug_level = parser.get('debug', 'debug_level')
 
+        # read version
+        with open(self.version_file_path) as fp:
+            self.version = fp.readline()
+
+    def defaults(self):
+        pass
+
     def Run(self):
+        # grab pcbeditor frame
+        windows = wx.GetTopLevelWindows()
+        for w in windows:
+            if "pcb editor" in w.GetTitle().lower():
+                self.frame = w
+
         # load board
         board = pcbnew.GetBoard()
-
-        # plugin paths
-        self.plugin_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-        self.config_file_path = os.path.join(self.plugin_folder, 'config.ini')
-        self.version_file_path = os.path.join(self.plugin_folder, 'version.txt')
 
         # go to the project folder - so that log will be in proper place
         os.chdir(os.path.dirname(os.path.abspath(board.GetFileName())))
@@ -197,14 +213,10 @@ class Archive3DModels(pcbnew.ActionPlugin):
         logger.info("Plugin executed on: " + repr(sys.platform))
         logger.info("Plugin executed with python version: " + repr(sys.version))
         logger.info("KiCad build version: " + str(pcbnew.GetBuildVersion()))
-
-        # load and parse the plugin version
-        with open(self.version_file_path) as fp:
-            version = fp.readline()
-        logger.info("Plugin version: " + version)
+        logger.info("Plugin version: " + self.version)
 
         # open dialog
-        main_dlg = MainWindow(self.config_file_path)
+        main_dlg = MainWindow(self.frame, self.config_file_path)
         # run the plugin
         if main_dlg.ShowModal():
             # read the config
@@ -229,7 +241,7 @@ class Archive3DModels(pcbnew.ActionPlugin):
                 # and run the plugin
                 not_copied_list = archiver.archive_3d_models(board, remap_missing_models=amm)
                 # when finished, let the user know which models are missing
-                e_dlg = EndReport(not_copied_list)
+                e_dlg = EndReport(self.frame, not_copied_list)
                 e_dlg.ShowModal()
                 e_dlg.Destroy()
                 pcbnew.Refresh()
