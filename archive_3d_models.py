@@ -23,21 +23,21 @@ class Archiver():
         if not os.path.exists(model_folder_path):
             os.makedirs(model_folder_path)
 
-        # get all modules
+        # get all footprints
         footprints = board.GetFootprints()
 
-        # go through all modules
+        # go through all footprints
         not_copied = []
         for fp in footprints:
             fp_ref = fp.GetReference()
             logger.info("Getting 3D models for footprint of: " + fp_ref)
-            # find all 3D models linked to module(footprint)
+            # find all 3D models linked to footprint
             models = fp.Models()
-            # go thorugh all models bound to module
+            # go thorugh all models bound to footprint
             # bad python API
             nr_models = range(len(models))
             for index in nr_models:
-                # pop one module from the list
+                # pop one 3D model from the list
                 model = models.pop()
                 # copy 3D model
                 model_path = model.m_Filename
