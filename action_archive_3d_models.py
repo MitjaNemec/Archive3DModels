@@ -186,10 +186,7 @@ class Archive3DModels(pcbnew.ActionPlugin):
 
     def Run(self):
         # grab pcbeditor frame
-        windows = wx.GetTopLevelWindows()
-        for w in windows:
-            if "pcb editor" in w.GetTitle().lower():
-                self.frame = w
+        self.frame = wx.FindWindowByName("PcbFrame")
 
         # load board
         board = pcbnew.GetBoard()
@@ -217,6 +214,7 @@ class Archive3DModels(pcbnew.ActionPlugin):
 
         # open dialog
         main_dlg = MainWindow(self.frame, self.config_file_path)
+        main_dlg.CenterOnParent()
         # run the plugin
         if main_dlg.ShowModal():
             # read the config
