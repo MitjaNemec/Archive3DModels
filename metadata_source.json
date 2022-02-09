@@ -1,8 +1,8 @@
 {
     "$schema": "https://go.kicad.org/pcm/schemas/v1",
-    "name": "Archive3DModels",
-    "description": "Archive 3D Models",
-    "description_full": "Copy footprint models to the project local subfolder and remap all the links within the used footprints",
+    "name": "Archive 3D Models",
+    "description": "copies 3D models to the project local subfolder",
+    "description_full": "Copies footprint models to the project local subfolder and remaps all the links within the used footprints.\n !!! Warning! If you update the footprint the link between the footprint and 3D model will be reset. You'll need to re-run the plugin in order to remap the links. You can make the layout file completely independent if you also export the footprints to project local librarary via menu File/Export/Footprints to new library and update the footprint to refer to new library.",
     "identifier": "com.github.MitjaNemec.Archive3DModels",
     "type": "plugin",
     "author": {
@@ -24,6 +24,7 @@
             "version": "VERSION",
             "status": "stable",
             "kicad_version": "6.0",
+            "kicad_version_max": "6.1",
             "download_url": "https://github.com/MitjaNemec/Archive3DModels/releases/download/VERSION/Archive3DModels-VERSION-pcm.zip",
             "download_sha256": "SHA256",
             "download_size": DOWNLOAD_SIZE,
