@@ -4,6 +4,7 @@ import logging
 import shutil
 logger = logging.getLogger(__name__)
 
+
 class Archiver():
     def __init__(self, model_local_path="/packages3D"):
         self.model_local_path = model_local_path
@@ -13,12 +14,12 @@ class Archiver():
 
         logger.debug("All defined environment variables: " + repr(os.environ))
 
-        # prepare folder for 3Dmodels
-        proj_path = os.path.dirname(os.path.abspath(board.GetFileName()))
-        model_folder_path = os.path.normpath(proj_path + self.model_local_path)
+        # prepare folder for 3D models
+        prj_path = os.path.dirname(os.path.abspath(board.GetFileName()))
+        model_folder_path = os.path.normpath(prj_path + self.model_local_path)
 
         # go to project folder
-        os.chdir(proj_path)
+        os.chdir(prj_path)
 
         if not os.path.exists(model_folder_path):
             os.makedirs(model_folder_path)
@@ -33,7 +34,7 @@ class Archiver():
             logger.info("Getting 3D models for footprint of: " + fp_ref)
             # find all 3D models linked to footprint
             models = fp.Models()
-            # go thorugh all models bound to footprint
+            # go through all models bound to footprint
             # bad python API
             nr_models = range(len(models))
             for index in nr_models:
@@ -56,8 +57,9 @@ class Archiver():
                     # if variable is not defined, we can not find the model. Thus don't put it on the list
                     else:
                         logger.info("Can not find model defined with enviroment variable:\n" + model_path)
+                        abs_model_path = None
                 # check if there is no path (model is local to project
-                elif proj_path == os.path.dirname(os.path.abspath(model_path)):
+                elif prj_path == os.path.dirname(os.path.abspath(model_path)):
                     abs_model_path = os.path.abspath(model_path)
                 # check if model is given with absolute path
                 elif os.path.exists(model_path):
@@ -70,8 +72,8 @@ class Archiver():
                         # testing project folder location
                         abs_model_path = os.path.normpath(os.path.join(os.getenv("KICAD6_3DMODEL_DIR"),model_path))
                         logger.info("Going with: " + abs_model_path)
-                    elif os.path.exists(os.path.normpath(os.path.join(proj_path, model_path))):
-                        abs_model_path = os.path.normpath(os.path.join(proj_path, model_path))
+                    elif os.path.exists(os.path.normpath(os.path.join(prj_path, model_path))):
+                        abs_model_path = os.path.normpath(os.path.join(prj_path, model_path))
                         logger.info("Going with: " + abs_model_path)
                     else:
                         logger.info("Can not find model defined with: " + model_path)

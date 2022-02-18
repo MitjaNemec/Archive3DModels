@@ -35,6 +35,21 @@
             ]
         },
         {
+            "version": "1.0.2",
+            "status": "stable",
+            "kicad_version": "6.0",
+            "kicad_version_max": "6.1",
+            "download_url": "https://github.com/MitjaNemec/Archive3DModels/releases/download/1.0.2/Archive3DModels-1.0.2-pcm.zip",
+            "download_sha256": "2d959c77656e14ed8091872206f50525130b282a6ccdea237e73282b7ccb7d5e",
+            "download_size": 15228,
+            "install_size": 31140,
+            "platforms": [
+                "linux",
+                "macos",
+                "windows"
+            ]
+        },
+        {
             "version": "VERSION",
             "status": "stable",
             "kicad_version": "6.0",
