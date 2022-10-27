@@ -29,6 +29,16 @@ from .archive_3d_models import Archiver
 from .archive_3d_models_main_GUI import Archive3DModelsMainGui
 from .archive_3d_models_settings_GUI import Archive3DModelsSettingsGui
 from .archive_3d_models_end_GUI import Archive3DModelsEndGui
+from .error_dialog_GUI import ErrorDialogGUI
+
+
+class ErrorDialog(ErrorDialogGUI):
+    def SetSizeHints(self, sz1, sz2):
+        # DO NOTHING
+        pass
+
+    def __init__(self, parent):
+        super(ErrorDialog, self).__init__(parent)
 
 
 class EndReport(Archive3DModelsEndGui):
@@ -167,7 +177,7 @@ class Archive3DModels(pcbnew.ActionPlugin):
         self.config_file_path = os.path.join(self.plugin_folder, 'config.ini')
         self.version_file_path = os.path.join(self.plugin_folder, 'version.txt')
 
-        #read config
+        # read config
         parser = ConfigParser()
         parser.read(self.config_file_path)
         self.model_local_path = parser.get('config', 'model_local_path')
@@ -212,13 +222,32 @@ class Archive3DModels(pcbnew.ActionPlugin):
         logger.info("KiCad build version: " + str(pcbnew.GetBuildVersion()))
         logger.info("Plugin version: " + self.version)
 
+        # GUI DPI scaling issue logging details
+        displays = (wx.Display(i) for i in range(wx.Display.GetCount()))
+        sizes = [display.GetGeometry().GetSize() for display in displays]
+        logger.info("Screen sizes: " + repr(sizes))
+
         # open dialog
         main_dlg = MainWindow(self.frame, self.config_file_path)
         main_dlg.CenterOnParent()
+
+        dlg_size = main_dlg.GetSize()
+        logger.info("Dialog size: " + repr(dlg_size))
+
+        logger.info("Char size: " + repr(dlg_size.GetCharHeight()))
+
         # run the plugin
         if main_dlg.ShowModal():
             # read the config
-            parser = ConfigParser()
+            try:
+                parser = ConfigParser()
+            except Exception:
+                logger.exception("Fatal error when creating an instance of Archie 3D models")
+                e_dlg = ErrorDialog(self.frame)
+                e_dlg.ShowModal()
+                e_dlg.Destroy()
+                logging.shutdown()
+                return
             parser.read(self.config_file_path)
             model_local_path = parser.get('config', 'model_local_path')
             if parser.get('config', 'allow_missing_models') == 'True':
@@ -244,18 +273,11 @@ class Archive3DModels(pcbnew.ActionPlugin):
                 e_dlg.Destroy()
                 pcbnew.Refresh()
             except Exception:
-                logger.exception("Fatal error when executing Archive 3D Models")
-                caption = 'Archive 3D Models'
-                message = "Fatal error when executing Archive 3D Models.\n" \
-                          + "You can raise an issue on plugin's GiHub page.\n" \
-                          + "Please attach the archive_3d_models.log which you should find in the project folder."
-                dlg = wx.MessageDialog(None, message, caption, wx.OK | wx.ICON_ERROR)
-                dlg.ShowModal()
-                dlg.Destroy()
+                logger.exception("Fatal error when creating an instance of Archie 3D models")
+                e_dlg = ErrorDialog(self.frame)
+                e_dlg.ShowModal()
+                e_dlg.Destroy()
 
         # clean up before exiting
         main_dlg.Destroy()
         logging.shutdown()
-
-
-

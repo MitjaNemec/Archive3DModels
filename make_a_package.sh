@@ -9,6 +9,7 @@ inkscape archive_3d_models_light.svg -w 64 -h 64 -o archive_3d_models.png
 ~/WxFormBuilder/bin/wxformbuilder -g Archive3DModels_end_GUI.fbp
 ~/WxFormBuilder/bin/wxformbuilder -g Archive3DModels_main_GUI.fbp
 ~/WxFormBuilder/bin/wxformbuilder -g Archive3DModels_settings_GUI.fbp
+~/WxFormBuilder/bin/wxformbuilder -g error_dialog_GUI.fbp
 
 # grab version and parse it into metadata.json
 cp metadata_source.json metadata_package.json
@@ -33,6 +34,7 @@ cp action_archive_3d_models.py plugins
 cp archive_3d_models_end_GUI.py plugins
 cp archive_3d_models_main_GUI.py plugins
 cp archive_3d_models_settings_GUI.py plugins
+cp error_dialog_GUI.py plugins
 cp archive_3d_models.py plugins
 cp version.txt plugins
 mkdir resources
