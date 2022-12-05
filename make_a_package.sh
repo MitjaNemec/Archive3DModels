@@ -9,13 +9,13 @@ inkscape archive_3d_models_light.svg -w 64 -h 64 -o archive_3d_models.png
 wxformbuilder -g Archive3DModels_end_GUI.fbp
 wxformbuilder -g Archive3DModels_main_GUI.fbp
 wxformbuilder -g Archive3DModels_settings_GUI.fbp
-bin/wxformbuilder -g error_dialog_GUI.fbp
+wxformbuilder -g error_dialog_GUI.fbp
 
 # grab version and parse it into metadata.json
 cp metadata_source.json metadata_package.json
 version=`cat version.txt`
 # remove all but the latest version in package metadata
-python parse_metadata_json.py
+python3 parse_metadata_json.py
 sed -i -e "s/VERSION/$version/g" metadata.json
 
 # cut the download, sha and size fields

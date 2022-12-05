@@ -234,7 +234,7 @@ class Archive3DModels(pcbnew.ActionPlugin):
         dlg_size = main_dlg.GetSize()
         logger.info("Dialog size: " + repr(dlg_size))
 
-        logger.info("Char size: " + repr(dlg_size.GetCharHeight()))
+        logger.info("Char size: " + repr(main_dlg.GetCharHeight()))
 
         # run the plugin
         if main_dlg.ShowModal():
