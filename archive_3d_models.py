@@ -44,13 +44,14 @@ class Archiver():
                 model_path = model.m_Filename
                 logger.info("Trying to copy: " + model_path)
 
+                # check if model path includes environment variable
+                abs_model_path = None
                 if "${" in model_path:
                     start_index = model_path.find("${")+2
                     end_index = model_path.find("}")
                     env_var = model_path[start_index:end_index]
 
                     path = os.getenv(env_var)
-
                     # if variable is defined, find proper model path
                     if path is not None:
                         abs_model_path = os.path.normpath(path+model_path[end_index+1:])
@@ -58,7 +59,7 @@ class Archiver():
                     else:
                         logger.info("Can not find model defined with enviroment variable:\n" + model_path)
                         abs_model_path = None
-                # check if there is no path (model is local to project
+                # check if there is no path (model is local to project)
                 elif prj_path == os.path.dirname(os.path.abspath(model_path)):
                     abs_model_path = os.path.abspath(model_path)
                 # check if model is given with absolute path
@@ -67,17 +68,23 @@ class Archiver():
                 # otherwise we don't know how to parse the path
                 else:
                     logger.info("Ambiguous path for the model: " + model_path)
-                    # test default 3D_library location "KICAD6_3DMODEL_DIR"
-                    if os.path.exists(os.path.normpath(os.path.join(os.getenv("KICAD6_3DMODEL_DIR"),model_path))):
-                        # testing project folder location
-                        abs_model_path = os.path.normpath(os.path.join(os.getenv("KICAD6_3DMODEL_DIR"),model_path))
-                        logger.info("Going with: " + abs_model_path)
+                    # test default 3D_library location if defined
+                    if os.getenv("KICAD6_3DMODEL_DIR"):
+                        if os.path.exists(os.path.normpath(os.path.join(os.getenv("KICAD6_3DMODEL_DIR"), model_path))):
+                            abs_model_path = os.path.normpath(os.path.join(os.getenv("KICAD6_3DMODEL_DIR"), model_path))
+                            logger.info("Going with: " + abs_model_path)
+                    # test default 3D_library location if defined
+                    elif os.getenv("KICAD7_3DMODEL_DIR"):
+                        if os.path.exists(os.path.normpath(os.path.join(os.getenv("KICAD7_3DMODEL_DIR"), model_path))):
+                            abs_model_path = os.path.normpath(os.path.join(os.getenv("KICAD7_3DMODEL_DIR"), model_path))
+                            logger.info("Going with: " + abs_model_path)
+                    # testing project folder location
                     elif os.path.exists(os.path.normpath(os.path.join(prj_path, model_path))):
                         abs_model_path = os.path.normpath(os.path.join(prj_path, model_path))
                         logger.info("Going with: " + abs_model_path)
                     else:
-                        logger.info("Can not find model defined with: " + model_path)
                         abs_model_path = None
+                        logger.info("Can not find model defined with: " + model_path)
 
                 # copy model
                 model_missing = True

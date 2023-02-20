@@ -17,7 +17,8 @@ else:
 debug_level = parser.get('debug', 'debug_level')
 
 # mock environment variables
-os.environ["KICAD6_3DMODEL_DIR"] = "/home/mitjan/Documents/Plate/Kicad_libs/official_libs/kicad-packages3D_V6/"
+#os.environ["KICAD6_3DMODEL_DIR"] = "/home/mitjan/Documents/Plate/Kicad_libs/official_libs/kicad-packages3D_V6/"
+os.environ["KICAD7_3DMODEL_DIR"] = "/home/mitjan/Documents/Plate/Kicad_libs/official_libs/kicad-packages3D_V7/"
 
 
 class TestArchive3DModels(unittest.TestCase):
