@@ -2,8 +2,19 @@ import os
 import os.path
 import logging
 import shutil
+import re
 logger = logging.getLogger(__name__)
 
+def get_variable(env_var):
+    path = os.getenv(env_var)
+
+    if path is None and (env_var == "KISYS3DMOD" or re.match("KICAD.*_3DMODEL_DIR", env_var)):
+        path = os.getenv("KICAD7_3DMODEL_DIR")
+
+        if path is None:
+            path = os.getenv("KICAD6_3DMODEL_DIR")
+        
+    return path
 
 class Archiver():
     def __init__(self, model_local_path="/packages3D"):
@@ -51,7 +62,20 @@ class Archiver():
                     end_index = model_path.find("}")
                     env_var = model_path[start_index:end_index]
 
-                    path = os.getenv(env_var)
+                    path = get_variable(env_var)
+                    # if variable is defined, find proper model path
+                    if path is not None:
+                        abs_model_path = os.path.normpath(path+model_path[end_index+1:])
+                    # if variable is not defined, we can not find the model. Thus don't put it on the list
+                    else:
+                        logger.info("Can not find model defined with enviroment variable:\n" + model_path)
+                        abs_model_path = None
+                elif "$(" in model_path:
+                    start_index = model_path.find("$(")+2
+                    end_index = model_path.find(")")
+                    env_var = model_path[start_index:end_index]
+
+                    path = get_variable(env_var)
                     # if variable is defined, find proper model path
                     if path is not None:
                         abs_model_path = os.path.normpath(path+model_path[end_index+1:])
