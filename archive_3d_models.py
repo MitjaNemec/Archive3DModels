@@ -114,7 +114,7 @@ class Archiver():
                 model_missing = True
                 if abs_model_path:
                     model_without_extension = abs_model_path.rsplit('.', 1)[0]
-                    for ext in ['.wrl', '.stp', '.step', '.igs']:
+                    for ext in ['.wrl', '.stp', '.step', '.igs', '.WRL', '.STP', '.STEP', '.IGS']:
                         try:
                             shutil.copy2(model_without_extension + ext, model_folder_path)
                             model_missing = False
