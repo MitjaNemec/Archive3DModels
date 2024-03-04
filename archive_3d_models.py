@@ -5,6 +5,7 @@ import shutil
 import re
 logger = logging.getLogger(__name__)
 
+
 def get_variable(env_var):
     path = os.getenv(env_var)
 
@@ -15,6 +16,7 @@ def get_variable(env_var):
             path = os.getenv("KICAD6_3DMODEL_DIR")
         
     return path
+
 
 class Archiver():
     def __init__(self, model_local_path="/packages3D"):
