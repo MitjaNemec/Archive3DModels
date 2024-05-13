@@ -17,8 +17,9 @@ else:
 debug_level = parser.get('debug', 'debug_level')
 
 # mock environment variables
-#os.environ["KICAD6_3DMODEL_DIR"] = "/home/mitjan/Documents/Plate/Kicad_libs/official_libs/kicad-packages3D_V6/"
-os.environ["KICAD7_3DMODEL_DIR"] = "/home/mitjan/Documents/Plate/Kicad_libs/official_libs/kicad-packages3D_V7/"
+os.environ["KICAD6_3DMODEL_DIR"] = "/home/mitjan/Documents/Plate/Kicad_libs/official_libs/kicad-packages3D/"
+os.environ["KICAD7_3DMODEL_DIR"] = "/home/mitjan/Documents/Plate/Kicad_libs/official_libs/kicad-packages3D/"
+os.environ["KICAD8_3DMODEL_DIR"] = "/home/mitjan/Documents/Plate/Kicad_libs/official_libs/kicad-packages3D/"
 
 
 class TestArchive3DModels(unittest.TestCase):
@@ -71,7 +72,7 @@ class TestArchive3DModels(unittest.TestCase):
 
         not_copied_list = archiver.archive_3d_models(board, remap_missing_models=False)
 
-        self.assertEqual(len(not_copied_list), 2, "Should be 2")
+        self.assertEqual(len(not_copied_list), 1, "Should be 1")
 
         saved = pcbnew.SaveBoard(out_filename, board)
         nr_errors = compare_boards.compare_boards(out_filename, ref_filename)

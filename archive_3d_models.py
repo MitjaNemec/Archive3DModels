@@ -49,8 +49,9 @@ class Archiver():
             models = fp.Models()
             # go through all models bound to footprint
             # bad python API
-            nr_models = range(len(models))
-            for index in nr_models:
+            nr_models = len(models)
+            models_to_push_back = []
+            for index in range(nr_models):
                 # pop one 3D model from the list
                 model = models.pop()
                 # copy 3D model
@@ -141,7 +142,10 @@ class Archiver():
                     model.m_Filename = new_path
 
                 # and push it to the back of the list (changed or unchaged)
-                models.push_back(model)
+                models_to_push_back.append(model)
+            # push all the models back
+            for m in models_to_push_back:
+                models.push_back(m)
 
         if not_copied:
             not_copied_pretty = [(x[0], os.path.normpath(x[1])) for x in not_copied]
