@@ -10,8 +10,12 @@ def get_variable(env_var):
     path = os.getenv(env_var)
 
     if path is None and (env_var == "KISYS3DMOD" or re.match("KICAD.*_3DMODEL_DIR", env_var)):
-        path = os.getenv("KICAD7_3DMODEL_DIR")
+        path = os.getenv("KICAD9_3DMODEL_DIR")
 
+        if path is None:
+            path = os.getenv("KICAD8_3DMODEL_DIR")
+        if path is None:
+            path = os.getenv("KICAD7_3DMODEL_DIR")
         if path is None:
             path = os.getenv("KICAD6_3DMODEL_DIR")
         
@@ -100,10 +104,17 @@ class Archiver():
                         if os.path.exists(os.path.normpath(os.path.join(os.getenv("KICAD6_3DMODEL_DIR"), model_path))):
                             abs_model_path = os.path.normpath(os.path.join(os.getenv("KICAD6_3DMODEL_DIR"), model_path))
                             logger.info("Going with: " + abs_model_path)
-                    # test default 3D_library location if defined
                     elif os.getenv("KICAD7_3DMODEL_DIR"):
                         if os.path.exists(os.path.normpath(os.path.join(os.getenv("KICAD7_3DMODEL_DIR"), model_path))):
                             abs_model_path = os.path.normpath(os.path.join(os.getenv("KICAD7_3DMODEL_DIR"), model_path))
+                            logger.info("Going with: " + abs_model_path)
+                    elif os.getenv("KICAD8_3DMODEL_DIR"):
+                        if os.path.exists(os.path.normpath(os.path.join(os.getenv("KICAD8_3DMODEL_DIR"), model_path))):
+                            abs_model_path = os.path.normpath(os.path.join(os.getenv("KICAD8_3DMODEL_DIR"), model_path))
+                            logger.info("Going with: " + abs_model_path)
+                    elif os.getenv("KICAD9_3DMODEL_DIR"):
+                        if os.path.exists(os.path.normpath(os.path.join(os.getenv("KICAD9_3DMODEL_DIR"), model_path))):
+                            abs_model_path = os.path.normpath(os.path.join(os.getenv("KICAD9_3DMODEL_DIR"), model_path))
                             logger.info("Going with: " + abs_model_path)
                     # testing project folder location
                     elif os.path.exists(os.path.normpath(os.path.join(prj_path, model_path))):
