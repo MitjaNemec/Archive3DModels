@@ -24,7 +24,7 @@
             "version": "VERSION",
             "status": "stable",
             "kicad_version": "6.0",
-            "kicad_version_max": "8.1",
+            "kicad_version_max": "9.1",
             "download_url": "https://github.com/MitjaNemec/Archive3DModels/releases/download/VERSION/Archive3DModels-VERSION-pcm.zip",
             "download_sha256": "SHA256",
             "download_size": DOWNLOAD_SIZE,
