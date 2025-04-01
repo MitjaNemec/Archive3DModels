@@ -30,6 +30,7 @@ from .archive_3d_models_main_GUI import Archive3DModelsMainGui
 from .archive_3d_models_settings_GUI import Archive3DModelsSettingsGui
 from .archive_3d_models_end_GUI import Archive3DModelsEndGui
 from .error_dialog_GUI import ErrorDialogGUI
+from .deprecation_dialog_GUI import DeprecationDialogGUI
 
 
 class ErrorDialog(ErrorDialogGUI):
@@ -40,6 +41,13 @@ class ErrorDialog(ErrorDialogGUI):
     def __init__(self, parent):
         super(ErrorDialog, self).__init__(parent)
 
+class DeprecationDialog(DeprecationDialogGUI):
+    def SetSizeHints(self, sz1, sz2):
+        # DO NOTHING
+        pass
+
+    def __init__(self, parent):
+        super(DeprecationDialog, self).__init__(parent)
 
 class EndReport(Archive3DModelsEndGui):
     def SetSizeHints(self, sz1, sz2):
@@ -175,6 +183,7 @@ class Archive3DModels(pcbnew.ActionPlugin):
         # plugin paths
         self.plugin_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)))
         self.config_file_path = os.path.join(self.plugin_folder, 'config.ini')
+        self.deprecation_file_path = os.path.join(self.plugin_folder, 'deprecation.null')
         self.version_file_path = os.path.join(self.plugin_folder, 'version.txt')
 
         # read config
@@ -197,6 +206,15 @@ class Archive3DModels(pcbnew.ActionPlugin):
     def Run(self):
         # grab pcbeditor frame
         self.frame = wx.FindWindowByName("PcbFrame")
+
+        # issue deprecation warning only once
+        if not os.path.exists(self.deprecation_file_path):
+            d_dlg = DeprecationDialog(self.frame)
+            d_dlg.ShowModal()
+            d_dlg.Destroy()
+            # create empty file
+            with open(self.deprecation_file_path, 'w') as f:
+                f.write("")
 
         # load board
         board = pcbnew.GetBoard()

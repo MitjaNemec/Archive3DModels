@@ -35,6 +35,7 @@ cp archive_3d_models_end_GUI.py plugins
 cp archive_3d_models_main_GUI.py plugins
 cp archive_3d_models_settings_GUI.py plugins
 cp error_dialog_GUI.py plugins
+cp deprecation_dialog_GUI.py plugins
 cp archive_3d_models.py plugins
 cp version.txt plugins
 mkdir resources
