@@ -6,4 +6,4 @@ If the footprint is updated, the 3Dmodel path is also updated. Thus the plugin s
 
 **Author :** doc.dr. Mitja Nemec
 
-**Date :** 2022-2025
+**Date :** 2025
