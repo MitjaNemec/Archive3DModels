@@ -1,4 +1,4 @@
-# Archive 3D models
+# KiCad Archive 3D models plugin
 
 This plugin copies footprint 3D models to the project local subfolder (default name: packages3D). The plugin also updates the links to the models within the layout (.kicad_pcb) file so that they point to the archived 3D models with a path relative to the project folder.
 
